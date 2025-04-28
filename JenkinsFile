@@ -2,8 +2,7 @@ pipeline {
     agent any
 
     environment {
-        DOCKERHUB_CREDENTIALS = credentials('dockerhub-credentials')  
-        DOCKERHUB_USERNAME = 'gauravjhagk'                  
+        DOCKERHUB_CREDENTIALS = credentials('dockerhub-credentials')  // Docker Hub credentials securely pulled
     }
 
     stages {
@@ -26,7 +25,9 @@ pipeline {
         stage('Login to Docker Hub') {
             steps {
                 script {
-                    bat "docker login -u gauravjhagk -p %DOCKERHUB_CREDENTIALS_PSW%"
+                    // Use Jenkins credentials environment variables
+                    bat "docker login -u %DOCKERHUB_CREDENTIALS_USR% -p %DOCKERHUB_CREDENTIALS_PSW%" 
+                    // %DOCKERHUB_CREDENTIALS_USR% is the username, %DOCKERHUB_CREDENTIALS_PSW% is the password
                 }
             }
         }
