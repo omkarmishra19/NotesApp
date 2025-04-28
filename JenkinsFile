@@ -1,0 +1,52 @@
+pipeline {
+    agent any
+
+    environment {
+        DOCKERHUB_CREDENTIALS = credentials('dockerhub-credentials')  
+        DOCKERHUB_USERNAME = 'gauravjhagk'                  
+    }
+
+    stages {
+        stage('Checkout Code') {
+            steps {
+                bat 'git version' 
+                checkout scm
+            }
+        }
+
+        stage('Build Docker Images') {
+            steps {
+                script {
+                    bat "docker build -t gauravjhagk/frontend:latest ./frontend"
+                    bat "docker build -t gauravjhagk/backend:latest ./backend"
+                }
+            }
+        }
+
+        stage('Login to Docker Hub') {
+            steps {
+                script {
+                    bat "docker login -u gauravjhagk -p %DOCKERHUB_CREDENTIALS_PSW%"
+                }
+            }
+        }
+
+        stage('Push Docker Images') {
+            steps {
+                script {
+                    bat "docker push gauravjhagk/frontend:latest"
+                    bat "docker push gauravjhagk/backend:latest"
+                }
+            }
+        }
+    }
+    
+    post {
+        success {
+            echo '🎉 Build and Push Successful!'
+        }
+        failure {
+            echo '❌ Build or Push Failed.'
+        }
+    }
+}
