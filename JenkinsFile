@@ -56,10 +56,10 @@ pipeline {
     
     post {
         success {
-            echo '🎉 Build and Push Successful!'
+            echo ' Build and Push Successful!'
         }
         failure {
-            echo '❌ Build or Push Failed.'
+            echo ' Build or Push Failed.'
         }
     }
 }
