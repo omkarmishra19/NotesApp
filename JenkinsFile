@@ -2,8 +2,9 @@ pipeline {
     agent any
 
     environment {
-        DOCKERHUB_CREDENTIALS = credentials('dockerhub-credentials')  // Docker Hub credentials securely pulled
+        DOCKERHUB_CREDENTIALS = credentials('dockerhub-credentials')
     }
+
     stages {
         stage('Set Git Config') {
             steps {
@@ -13,13 +14,10 @@ pipeline {
                 bat 'git config --global i18n.logOutputEncoding utf-8'
             }
         }
-    }
 
-
-    stages {
         stage('Checkout Code') {
             steps {
-                bat 'git version' 
+                bat 'git version'
                 checkout scm
             }
         }
@@ -36,9 +34,7 @@ pipeline {
         stage('Login to Docker Hub') {
             steps {
                 script {
-                    // Use Jenkins credentials environment variables
-                    bat "docker login -u %DOCKERHUB_CREDENTIALS_USR% -p %DOCKERHUB_CREDENTIALS_PSW%" 
-                    // %DOCKERHUB_CREDENTIALS_USR% is the username, %DOCKERHUB_CREDENTIALS_PSW% is the password
+                    bat "docker login -u %DOCKERHUB_CREDENTIALS_USR% -p %DOCKERHUB_CREDENTIALS_PSW%"
                 }
             }
         }
@@ -53,13 +49,12 @@ pipeline {
         }
     }
 
-    
     post {
         success {
-            echo ' Build and Push Successful!'
+            echo 'Build and Push Successful!'
         }
         failure {
-            echo ' Build or Push Failed.'
+            echo 'Build or Push Failed.'
         }
     }
 }
